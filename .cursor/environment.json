@@ -1,0 +1,20 @@
+{
+  "name": "Agentic Build",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "api",
+      "command": "npm run dev:server",
+      "description": "Express JSON API on port 3001."
+    },
+    {
+      "name": "web",
+      "command": "npm run dev:web",
+      "description": "Vite + React dev server on port 5173 (proxies /api to the API)."
+    }
+  ],
+  "ports": [
+    { "name": "api", "port": 3001 },
+    { "name": "web", "port": 5173 }
+  ]
+}
