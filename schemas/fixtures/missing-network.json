@@ -1,0 +1,14 @@
+{
+  "apiVersion": "aeon.dev/v1",
+  "kind": "Job",
+  "metadata": {
+    "id": "job-missing-network",
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  "spec": {
+    "stage": "executor",
+    "argv": ["gromacs"],
+    "timeoutSeconds": 60,
+    "capabilityToken": "placeholder-capability-token"
+  }
+}

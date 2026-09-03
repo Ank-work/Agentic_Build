@@ -1,0 +1,17 @@
+{
+  "apiVersion": "aeon.dev/v1",
+  "kind": "Job",
+  "metadata": {
+    "id": "job-invalid-shell-command-field",
+    "createdAt": "2026-09-03T00:00:00Z"
+  },
+  "spec": {
+    "stage": "executor",
+    "argv": ["gromacs"],
+    "command": "gromacs -s topol.tpr",
+    "shell": true,
+    "timeoutSeconds": 60,
+    "network": { "mode": "none" },
+    "capabilityToken": "placeholder-capability-token"
+  }
+}

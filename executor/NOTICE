@@ -1,0 +1,10 @@
+Aeon executor (Go daemon)
+
+This directory is dual-licensed: AGPL-3.0 + commercial (see LICENSE and
+docs/aeon-build-spec.md §16).
+
+Never meter local compute.
+
+The control plane remains proprietary. SDKs are Apache-2.0. This NOTICE
+applies to the executor tree only; do not treat the rest of the repository
+as AGPL.

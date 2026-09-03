@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aeon.local/schemas/job-spec.v1.json",
+  "title": "AeonJobSpec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "apiVersion",
+    "kind",
+    "metadata",
+    "spec"
+  ],
+  "properties": {
+    "apiVersion": {
+      "type": "string",
+      "const": "aeon.dev/v1"
+    },
+    "kind": {
+      "type": "string",
+      "const": "Job"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "createdAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "workflow": { "type": "string", "description": "W1–W8 or other named workflow" },
+        "labels": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["argv", "timeoutSeconds", "network", "stage"],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": ["reader", "executor"],
+          "description": "Reader parses untrusted input; executor runs with a capability token."
+        },
+        "argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "Process argument vector. Never a shell string. argv[0] must be on the allowlist."
+        },
+        "cwd": {
+          "type": "string",
+          "description": "Working directory on AK; must be under an allowed root."
+        },
+        "env": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Explicit env keys only. No shell expansion. Secrets via SecretRef names, not values."
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400
+        },
+        "network": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode"],
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": ["none", "allowlist"],
+              "default": "none",
+              "description": "Default none. allowlist requires destinations[] and a matching capability."
+            },
+            "destinations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["host"],
+                "properties": {
+                  "host": { "type": "string" },
+                  "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
+                }
+              }
+            }
+          }
+        },
+        "capabilityToken": {
+          "type": "string",
+          "description": "Opaque capability for executor stage. Reader stage must omit or send empty. Never log the token."
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "paths": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Glob or relative paths under cwd to upload after exit."
+            },
+            "bucket": {
+              "type": "string",
+              "description": "R2 bucket name. PC→R2 direct."
+            },
+            "prefix": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
