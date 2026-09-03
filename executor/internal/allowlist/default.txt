@@ -1,0 +1,3 @@
+# Allowlisted argv[0] binaries for the Aeon executor (§6.1, §12.2).
+# Hard-denied shells (sh, bash, cmd.exe, powershell, …) are never accepted.
+gromacs
