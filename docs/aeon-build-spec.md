@@ -501,7 +501,7 @@ Ship this before expanding W1–W8 feature surface:
 
 ## 15. Phased build
 
-Merge **platform ~60 engineer-weeks** + **science ~6 months**. Do not pretend this is a weekend MVP.
+Keep building until the whole Aeon app this spec already defines is built: M0, platform (§15.2), and science gateway + W1–W8 + correctness (§13, §15.3). Do **not** stop after M0 or the Phase 0–1 implementable slice; those are the first chunk, not the finish line. Science **~6 months** is relative duration context, not a stop. Do not pretend this is a weekend MVP.
 
 ### 15.1 M0 — user actions on AK (before platform code)
 
@@ -524,7 +524,7 @@ The implementing team cannot complete M0 from this Mac repo. **The user (kulan) 
 - Leave **Docker stopped**.
 - Do **not** install ORCA, DrugBank, GDB, MACE-ASL checkpoints, or Wolfram-free.
 
-**Phase 0–1 implementable slice** (specify, do not implement in this repo):
+**Phase 0–1 implementable slice** (specify, do not implement in this repo). This slice is the **first** implementable chunk and is **not** permission to stop; continue through §15.2 and §15.3 until the whole app is built:
 
 1. M0 worker verify as kulan.
 2. `host-facts.json`.
@@ -535,13 +535,13 @@ The implementing team cannot complete M0 from this Mac repo. **The user (kulan) 
 7. Accounts list above.
 8. Git-mediated queue only if worker is unavailable.
 
-### 15.2 Platform (~60 engineer-weeks)
+### 15.2 Platform
 
 Worker controller (sleep/reboot), Temporal + Go executor, capability tokens, Doppler, R2, two-stage reader/executor, pin-and-diff MCP, signing/WiX notes, Next.js/WorkOS later.
 
 ### 15.3 Science (~6 months)
 
-Gateway tools 3–10, W1–W8, golden-value suite (after primary-source pull), cache policy (~113 GB on C: + R2 warm).
+Gateway tools 3–10, W1–W8, golden-value suite (after primary-source pull), cache policy (~113 GB on C: + R2 warm). **~6 months** is duration context, not a stop.
 
 ---
 
