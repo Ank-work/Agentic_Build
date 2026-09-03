@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -9,12 +10,14 @@ import (
 	"github.com/Ank-work/Agentic_Build/executor/internal/capability"
 	"github.com/Ank-work/Agentic_Build/executor/internal/gitqueue"
 	"github.com/Ank-work/Agentic_Build/executor/internal/job"
+	"github.com/Ank-work/Agentic_Build/executor/internal/run"
 )
 
 func main() {
 	allowlistPath := flag.String("allowlist", "", "argv[0] allowlist file (default: embedded default.txt)")
 	jobsInbox := flag.String("jobs-inbox", "", "fallback git-queue inbox (not the happy path)")
 	validateFile := flag.String("validate-file", "", "load and validate a job JSON file, then exit")
+	runFile := flag.String("run-file", "", "load, validate, and run a job JSON file as argv (never a shell)")
 	flag.Parse()
 
 	allowed := allowlist.Default()
@@ -32,6 +35,11 @@ func main() {
 			fail(err)
 		}
 		return
+	case *runFile != "":
+		if err := runPath(*runFile, allowed); err != nil {
+			fail(err)
+		}
+		return
 	case *jobsInbox != "":
 		outbox := gitqueue.OutboxDir(*jobsInbox)
 		if err := gitqueue.ProcessInbox(*jobsInbox, outbox); err != nil {
@@ -42,7 +50,7 @@ func main() {
 		return
 	default:
 		fmt.Println("aeon-executor skeleton (not a science executor)")
-		fmt.Println("flags: -validate-file, -allowlist, -jobs-inbox")
+		fmt.Println("flags: -validate-file, -run-file, -allowlist, -jobs-inbox")
 	}
 }
 
@@ -65,6 +73,32 @@ func validatePath(path string, allowed allowlist.Set) error {
 	fmt.Printf("id=%s\n", j.Metadata.ID)
 	fmt.Printf("stage=%s\n", j.Spec.Stage)
 	fmt.Printf("network.mode=%s\n", j.NetworkMode())
+	return nil
+}
+
+func runPath(path string, allowed allowlist.Set) error {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	j, err := job.Parse(raw)
+	if err != nil {
+		return err
+	}
+	if err := allowlist.Check([]string(j.Spec.Argv), allowed); err != nil {
+		return err
+	}
+	if err := capability.Validate(j.Spec.Stage, j.Spec.CapabilityToken, j.Spec.Argv[0], j.DestinationHosts()); err != nil {
+		return err
+	}
+	res, err := run.Run(context.Background(), j, allowed)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("id=%s\n", res.ID)
+	fmt.Printf("stage=%s\n", res.Stage)
+	fmt.Printf("network.mode=%s\n", res.NetworkMode)
+	fmt.Printf("exit=%d\n", res.ExitCode)
 	return nil
 }
 
