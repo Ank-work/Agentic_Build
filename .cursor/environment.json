@@ -1,0 +1,4 @@
+{
+  "name": "Aeon",
+  "install": "cd executor && GOTOOLCHAIN=go1.25.0 go test ./..."
+}
